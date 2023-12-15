@@ -208,7 +208,7 @@ export const deleteHook = async (account: IAccount & { name?: string }) => {
   try {
     // Update tx Fee value with network estimation
     const res = await estimateFee(tx, account)
-    tx['Fee'] = res?.base_fee || '1000'
+    tx['Fee'] = res?.open_ledger_fee || '1000'
   } catch (err) {
     console.error(err)
   }

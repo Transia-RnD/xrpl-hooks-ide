@@ -124,8 +124,8 @@ export const SetHookDialog: React.FC<{ accountAddress: string }> = React.memo(
         return
       }
       const res = await estimateFee(tx, account)
-      if (res && res.base_fee) {
-        setValue('Fee', Math.round(Number(res.base_fee || '')).toString())
+      if (res && res.open_ledger_fee) {
+        setValue('Fee', Math.round(Number(res.open_ledger_fee || '')).toString())
       }
     }, [account, getValues, setValue])
 
@@ -325,8 +325,8 @@ export const SetHookDialog: React.FC<{ accountAddress: string }> = React.memo(
                           if (tx) {
                             const res = await estimateFee(tx, account)
 
-                            if (res && res.base_fee) {
-                              setValue('Fee', Math.round(Number(res.base_fee || '')).toString())
+                            if (res && res.open_ledger_fee) {
+                              setValue('Fee', Math.round(Number(res.open_ledger_fee || '')).toString())
                             }
                           }
                         } catch (err) {}

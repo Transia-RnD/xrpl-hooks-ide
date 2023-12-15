@@ -194,7 +194,7 @@ const Transaction: FC<TransactionProps> = ({ header, state: txState, ...props })
       ptx.Sequence = account.sequence
 
       const res = await _estimateFee(ptx, account, opts)
-      const fee = res?.base_fee
+      const fee = res?.open_ledger_fee
       setState({ estimatedFee: fee })
       return fee
     },
