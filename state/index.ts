@@ -84,7 +84,7 @@ export interface IState {
   mainModalShowed: boolean
   accounts: IAccount[]
   compileOptions: {
-    optimizationLevel: '-O0' | '-O1' | '-O2' | '-O3' | '-O4' | '-Os'
+    optimizationLevel: '-O0' | '-O1' | '-O2' | '-O3' | '-O4' | '-Oz'
     strip: boolean
   }
   deployValues: DeployValue

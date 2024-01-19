@@ -134,8 +134,8 @@ const CompilerSettings = () => {
           </Button>
           <Button
             css={{ fontFamily: '$monospace' }}
-            outline={snap.compileOptions.optimizationLevel !== '-Os'}
-            onClick={() => (state.compileOptions.optimizationLevel = '-Os')}
+            outline={snap.compileOptions.optimizationLevel !== '-Oz'}
+            onClick={() => (state.compileOptions.optimizationLevel = '-Oz')}
           >
             -Os
           </Button>
