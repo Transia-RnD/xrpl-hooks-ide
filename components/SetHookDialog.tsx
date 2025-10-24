@@ -308,6 +308,13 @@ export const SetHookDialog: React.FC<{ accountAddress: string }> = React.memo(
                                               newParams[paramIndex] = { Parameter: {} }
                                             }
                                             newParams[paramIndex].Parameter.ParameterFlag = selected?.value || ''
+                                            const flag = selected?.value || ''
+                                            // Auto-fill type based on flag
+                                            if (flag === '0x00010000' || flag === '0x00040000') {
+                                              newParams[paramIndex].Parameter.ParameterType.type = 'AMOUNT'
+                                            } else if (flag === '0x00020000') {
+                                              newParams[paramIndex].Parameter.ParameterType.type = 'UINT256'
+                                            }
                                             onChange(newParams)
                                           }}
                                         />
@@ -422,7 +429,17 @@ export const SetHookDialog: React.FC<{ accountAddress: string }> = React.memo(
                                   value={PARAMETER_FLAG_OPTIONS.find(
                                     opt => opt.value === String(controllerField.value)
                                   )}
-                                  onChange={(selected: any) => controllerField.onChange(selected?.value || '')}
+                                  onChange={(selected: any) => {
+                                    const flag = selected?.value || ''
+                                    controllerField.onChange(flag)
+                                    
+                                    // Auto-fill type based on flag
+                                    if (flag === '0x00010000' || flag === '0x00040000') {
+                                      setValue(`InstanceParameters.${index}.InstanceParameter.ParameterType.type`, 'AMOUNT')
+                                    } else if (flag === '0x00020000') {
+                                      setValue(`InstanceParameters.${index}.InstanceParameter.ParameterType.type`, 'UINT256')
+                                    }
+                                  }}
                                   isDisabled={field.$metaData?.required}
                                 />
                               </Box>
@@ -442,7 +459,16 @@ export const SetHookDialog: React.FC<{ accountAddress: string }> = React.memo(
                                   value={PARAMETER_TYPE_OPTIONS.find(
                                     opt => opt.value === controllerField.value
                                   )}
-                                  onChange={(selected: any) => controllerField.onChange(selected?.value || '')}
+                                  onChange={(selected: any) => {
+                                    const flag = selected?.value || ''
+                                    // Auto-fill type based on flag
+                                    if (flag === '0x00010000' || flag === '0x00040000') {
+                                      setValue(`InstanceParameters.${index}.InstanceParameter.ParameterType.type`, 'AMOUNT')
+                                    } else if (flag === '0x00020000') {
+                                      setValue(`InstanceParameters.${index}.InstanceParameter.ParameterType.type`, 'UINT256')
+                                    }
+                                    controllerField.onChange(flag)
+                                  }}
                                   isDisabled={field.$metaData?.required}
                                 />
                               </Box>
