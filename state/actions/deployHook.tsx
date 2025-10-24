@@ -8,6 +8,7 @@ import { DeployContractData, toHex } from '../../utils/setHook'
 import ResultLink from '../../components/ResultLink'
 import { SubmitResponse, SubmittableTransaction, Transaction, TransactionMetadata, TxResponse, Wallet } from '@transia/xrpl'
 import { rpc} from './xrpl-client'
+import { isHex } from '../../utils/hex'
 
 function arrayBufferToHex(arrayBuffer?: ArrayBuffer | null) {
   if (!arrayBuffer) {
@@ -60,6 +61,12 @@ export const prepareDeployHookTx = async (
     }
   }))
 
+  Functions.forEach(func => {
+    func.Function.Parameters?.forEach(param => {
+      param.Parameter.ParameterName = isHex(param.Parameter.ParameterName) ? param.Parameter.ParameterName : toHex(param.Parameter.ParameterName || '')
+    })
+  })
+
   if (typeof window === 'undefined') return
   const tx = {
     Account: account.address,
@@ -96,7 +103,11 @@ export const deployHook = async (account: IAccount & { name?: string }, data: De
     command: "ledger",
   }) as any;
   tx.LastLedgerSequence = ledgerResponse.result.closed.ledger.ledger_index + 3
+  console.log(tx);
+  
   const wallet = Wallet.fromSeed(account.secret)
+  console.log(wallet);
+  
   const { tx_blob } = wallet.sign(tx as Transaction)
 
   const currentAccount = state.accounts.find(acc => acc.address === account.address)

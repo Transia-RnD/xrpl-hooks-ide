@@ -128,6 +128,8 @@ export const modifyTxState = (
 
 export const prepareTransaction = (data: any) => {
   let options = { ...data }
+  console.log(options);
+  
   Object.keys(options).forEach(field => {
     let _value = options[field]
 
@@ -340,4 +342,5 @@ export const transactionsOptions = transactionsData.map(tx => ({
   label: tx.TransactionType
 }))
 
-export const defaultTransactionType = transactionsOptions.find(tt => tt.value === 'Payment')
+export const defaultPaymentTT = transactionsOptions.find(tt => tt.value === 'Payment')
+export const defaultCallTT = transactionsOptions.find(tt => tt.value === 'ContractCall')

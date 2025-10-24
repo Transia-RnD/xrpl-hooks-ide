@@ -72,6 +72,8 @@ export const estimateCallFee = async (
   open_ledger_fee: string
 }> => {
   try {
+    console.log(tx);
+    
     const copyTx = JSON.parse(JSON.stringify(tx))
     delete copyTx['SigningPubKey']
     copyTx.Fee = '10000000'
@@ -83,12 +85,17 @@ export const estimateCallFee = async (
 
     // @ts-expect-error -- ignore
     const gasUsed = meta.GasUsed
+    console.log(res);
+    
     
     // @ts-expect-error -- ignore
-    if (res.result.error) {
+    if (res.result.engine_result !== 'tesSUCCESS') {
       // @ts-expect-error -- ignore
-      throw new Error(`[${res.result.error}] ${res.result.error_exception}.`);
+      throw new Error(res.result.engine_result_message);
     }
+
+    console.log(gasUsed);
+    
     if (gasUsed) {
       return {
         base_fee: String(gasUsed),

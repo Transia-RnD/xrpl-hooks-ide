@@ -121,7 +121,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
               <Alert />
               <Flex
                 as="a"
-                href="https://github.com/Xahau/xrpl-hooks-ide/issues"
+                href="https://github.com/Transia-RnD/xrpl-hooks-ide/issues"
                 target="_blank"
                 rel="noopener noreferrer"
                 css={{ position: 'fixed', right: '$4', bottom: '$4' }}

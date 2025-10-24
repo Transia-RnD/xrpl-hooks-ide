@@ -1,9 +1,6 @@
-import { Play } from 'phosphor-react'
-import { FC, useCallback, useEffect } from 'react'
-import { useSnapshot } from 'valtio'
-import state from '../../state'
+import React, { FC, useCallback, useEffect } from 'react'
 import {
-  defaultTransactionType,
+  defaultPaymentTT,
   getTxFields,
   modifyTxState,
   prepareState,
@@ -20,6 +17,9 @@ import { TxUI } from './ui'
 import { estimateFee, estimateCallFee } from '../../utils/estimateFee'
 import toast from 'react-hot-toast'
 import { combineFlags, extractFlags, transactionFlags } from '../../state/constants/flags'
+import { Play } from 'phosphor-react'
+import { useSnapshot } from 'valtio'
+import state from '../../state'
 
 export interface TransactionProps {
   header: string
@@ -27,6 +27,7 @@ export interface TransactionProps {
 }
 
 const Transaction: FC<TransactionProps> = ({ header, state: txState, ...props }) => {
+
   const { accounts, editorSettings } = useSnapshot(state)
   const { selectedAccount, selectedTransaction, txIsDisabled, txIsLoading, viewType, editorValue } =
     txState
@@ -40,30 +41,17 @@ const Transaction: FC<TransactionProps> = ({ header, state: txState, ...props })
 
   const prepareOptions = useCallback(
     (state: Partial<TransactionState> = txState) => {
-      const {
-        selectedTransaction,
-        selectedAccount,
-        txFields,
-        selectedFlags,
-        // hookParameters,
-        // memos
-      } = state
+      const { selectedTransaction, selectedAccount, txFields, selectedFlags } = state
 
       const TransactionType = selectedTransaction?.value || null
       const Account = selectedAccount?.value || null
       const Flags = combineFlags(selectedFlags?.map(flag => flag.value)) || txFields?.Flags
-      // const HookParameters = Object.entries(hookParameters || {}).reduce<
-      //   DeployContractData['HookParameters']
-      // >((acc, [_, { label, value }]) => {
-      //   return acc.concat({
-      //     HookParameter: { HookParameterName: toHex(label), HookParameterValue: value }
-      //   })
-      // }, [])
+
       return prepareTransaction({
         ...txFields,
         Flags,
         TransactionType,
-        Account,
+        Account
       })
     },
     [txState]
@@ -114,7 +102,7 @@ const Transaction: FC<TransactionProps> = ({ header, state: txState, ...props })
         throw Error('Account must be selected from imported accounts!')
       }
       const options = prepareOptions(st)
-      
+
       // delete unnecessary fields
       Object.keys(options).forEach(field => {
         if (!options[field]) {
@@ -146,7 +134,7 @@ const Transaction: FC<TransactionProps> = ({ header, state: txState, ...props })
   ])
 
   const resetState = useCallback(
-    (transactionType: SelectOption | undefined = defaultTransactionType) => {
+    (transactionType: SelectOption | undefined = defaultPaymentTT) => {
       const fields = getTxFields(transactionType?.value)
 
       const nwState: Partial<TransactionState> = {
@@ -199,8 +187,6 @@ const Transaction: FC<TransactionProps> = ({ header, state: txState, ...props })
         if (!opts?.silent) {
           toast.error('Please select account from the list.')
         }
-        console.log('Account not found:', state.selectedAccount?.value);
-        
         return
       }
 

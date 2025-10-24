@@ -257,29 +257,6 @@
       "$type": "account",
       "$value": ""
     },
-    "FunctionName": {
-      "$type": "hexable",
-      "$ishex": false,
-      "$value": "base"
-    },
-    "Parameters": [
-      {
-        "Parameter": {
-          "ParameterValue": {
-            "type": "ACCOUNT",
-            "value": "rHdgnwhjuTu2nfJPmstsiZMwK5uSLrEhyU"
-          }
-        }
-      },
-      {
-        "Parameter": {
-          "ParameterValue": {
-            "type": "AMOUNT",
-            "value": "1000000"
-          }
-        }
-      }
-    ],
     "ComputationAllowance": 1000000,
     "Fee": "12"
   },
