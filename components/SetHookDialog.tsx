@@ -311,8 +311,10 @@ export const SetHookDialog: React.FC<{ accountAddress: string }> = React.memo(
                                             const flag = selected?.value || ''
                                             // Auto-fill type based on flag
                                             if (flag === '0x00010000' || flag === '0x00040000') {
+                                              // @ts-expect-error -- TODO
                                               newParams[paramIndex].Parameter.ParameterType.type = 'AMOUNT'
                                             } else if (flag === '0x00020000') {
+                                              // @ts-expect-error -- TODO
                                               newParams[paramIndex].Parameter.ParameterType.type = 'UINT256'
                                             }
                                             onChange(newParams)

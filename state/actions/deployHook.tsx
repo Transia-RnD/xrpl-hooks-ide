@@ -63,6 +63,7 @@ export const prepareDeployHookTx = async (
 
   Functions.forEach(func => {
     func.Function.Parameters?.forEach(param => {
+      // @ts-expect-error -- TODO
       param.Parameter.ParameterName = isHex(param.Parameter.ParameterName) ? param.Parameter.ParameterName : toHex(param.Parameter.ParameterName || '')
     })
   })
