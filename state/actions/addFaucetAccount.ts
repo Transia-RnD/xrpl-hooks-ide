@@ -66,10 +66,11 @@ export const addFunds = async (address: string) => {
   if ('error' in json) {
     return toast.error(json.error, { id: toastId })
   } else {
-    toast.success(`Funds added (${json.xrp} XRP)`, { id: toastId })
+    const xrp = 1000
+    toast.success(`Funds added (${xrp} XRP)`, { id: toastId })
     const currAccount = state.accounts.find(acc => acc.address === address)
     if (currAccount) {
-      currAccount.xrp = (Number(currAccount.xrp) + json.xrp * 1000000).toString()
+      currAccount.xrp = (Number(currAccount.xrp) + xrp * 1000000).toString()
     }
   }
 }

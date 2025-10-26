@@ -12,9 +12,9 @@ export const importAccount = (secret: string, name?: string) => {
   if (state.accounts.find(acc => acc.secret === secret)) {
     return toast.error('Account already added!')
   }
-  let account: any | null = null
+  let wallet: Wallet | null = null
   try {
-    account = Wallet.fromSeed(secret)
+    wallet = Wallet.fromSeed(secret)
   } catch (err: any) {
     if (err?.message) {
       toast.error(err.message)
@@ -23,13 +23,13 @@ export const importAccount = (secret: string, name?: string) => {
     }
     return
   }
-  if (!account || !account.secret.familySeed) {
+  if (!wallet || !wallet.seed) {
     return toast.error(`Couldn't create account!`)
   }
   state.accounts.push({
     name: name || names[state.accounts.length],
-    address: account.address || '',
-    secret: account.secret.familySeed || '',
+    address: wallet.classicAddress || '',
+    secret: wallet.seed || '',
     xrp: '0',
     sequence: 1,
     contract: null,

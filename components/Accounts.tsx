@@ -194,7 +194,7 @@ export const AccountDialog = ({
                   }}
                 >
                   {Dinero({
-                    amount: Number(activeAccount?.xrp || '0'),
+                    amount: Number(activeAccount?.xrp || 0),
                     precision: 6
                   })
                     .toUnit()
@@ -363,6 +363,7 @@ const Accounts: FC<AccountProps> = props => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [snap.accounts.length, snap.clientStatus])
+  
   return (
     <Box
       as="div"
@@ -451,7 +452,7 @@ const Accounts: FC<AccountProps> = props => {
                     {account.address}{' '}
                     {!account?.error ? (
                       `(${Dinero({
-                        amount: Number(account?.xrp || '0'),
+                        amount: Number(account?.xrp || 0),
                         precision: 6
                       })
                         .toUnit()
