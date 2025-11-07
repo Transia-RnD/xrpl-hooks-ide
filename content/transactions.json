@@ -282,14 +282,12 @@
             {
               "InstanceParameter": {
                 "ParameterFlag": 0,
-                "ParameterName": "CAFE",
                 "ParameterType": "ACCOUNT"
               }
             },
             {
               "InstanceParameter": {
                 "ParameterFlag": 0,
-                "ParameterName": "CAFE",
                 "ParameterType": "ACCOUNT"
               }
             }
@@ -320,7 +318,6 @@
     "Parameters": [
       {
         "Parameter": {
-          "ParameterName": "userId",
           "ParameterValue": "12345"
         }
       }

@@ -52,21 +52,20 @@ export const prepareDeployHookTx = async (
 
   const { InstanceParameters, Functions } = data
   const filteredInstanceParameters = InstanceParameters.filter(
-    hp => hp.InstanceParameter.ParameterFlag !== undefined && hp.InstanceParameter.ParameterName && hp.InstanceParameter.ParameterType
+    hp => hp.InstanceParameter.ParameterFlag !== undefined && hp.InstanceParameter.ParameterType
   )?.map(aa => ({
     InstanceParameter: {
       ParameterFlag: aa.InstanceParameter.ParameterFlag || 0,
-      ParameterName: toHex(aa.InstanceParameter.ParameterName || ''),
       ParameterType: aa.InstanceParameter.ParameterType || { type: '' },
     }
   }))
 
-  Functions.forEach(func => {
-    func.Function.Parameters?.forEach(param => {
-      // @ts-expect-error -- TODO
-      param.Parameter.ParameterName = isHex(param.Parameter.ParameterName) ? param.Parameter.ParameterName : toHex(param.Parameter.ParameterName || '')
-    })
-  })
+  // Functions.forEach(func => {
+  //   func.Function.Parameters?.forEach(param => {
+  //     // @ts-expect-error -- TODO
+  //     param.Parameter.ParameterName = isHex(param.Parameter.ParameterName) ? param.Parameter.ParameterName : toHex(param.Parameter.ParameterName || '')
+  //   })
+  // })
 
   if (typeof window === 'undefined') return
   const tx = {

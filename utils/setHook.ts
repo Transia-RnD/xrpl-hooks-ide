@@ -12,8 +12,7 @@ export interface DeployContractData {
   }[]
   InstanceParameters: {
     InstanceParameter: {
-      ParameterFlag?: number
-      ParameterName?: string
+      ParameterFlag?: SVGAnimatedNumberList
       ParameterType?: { type: string }
       ParameterValue?: { value: string }
     }
@@ -41,7 +40,6 @@ export const getParameters = (content?: string) => {
     InstanceParameter: {
       // @ts-ignore -- todo
       ParameterFlag: tag.flag,
-      ParameterName: tag.name || '',
       ParameterType: { type: tag.type || '' }
     },
     $metaData: {

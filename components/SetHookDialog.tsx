@@ -49,9 +49,9 @@ const PARAMETER_TYPE_OPTIONS: SelectOption[] = [
 ]
 
 const PARAMETER_FLAG_OPTIONS: SelectOption[] = [
+  { label: 'None', value: '0' },
   { label: 'tfSendAmount', value: '0x00010000' },
-  { label: 'tfSendNFToken', value: '0x00020000' },
-  { label: 'tfAuthorizeToken', value: '0x00040000' }
+  { label: 'tfSendNFToken', value: '0x00020000' }
 ]
 
 export const SetHookDialog: React.FC<{ accountAddress: string }> = React.memo(
@@ -352,7 +352,7 @@ export const SetHookDialog: React.FC<{ accountAddress: string }> = React.memo(
                                         <Trash weight="regular" size="16px" />
                                       </Button>
                                     </Flex>
-                                    <Flex row css={{ mt: '$2', width: '100%' }}>
+                                    {/* <Flex row css={{ mt: '$2', width: '100%' }}>
                                       <Input
                                         placeholder="Parameter name"
                                         css={{ width: '100%' }}
@@ -366,7 +366,7 @@ export const SetHookDialog: React.FC<{ accountAddress: string }> = React.memo(
                                           onChange(newParams)
                                         }}
                                       />
-                                    </Flex>
+                                    </Flex> */}
                                   </Stack>
                                 ))}
                                 <Button
@@ -377,7 +377,6 @@ export const SetHookDialog: React.FC<{ accountAddress: string }> = React.memo(
                                     const newParams = [...value, { 
                                       Parameter: { 
                                         ParameterFlag: '',
-                                        ParameterName: '',
                                         ParameterType: { type: '' }
                                       } 
                                     }]
@@ -416,13 +415,13 @@ export const SetHookDialog: React.FC<{ accountAddress: string }> = React.memo(
                   <Label style={{ marginBottom: '10px', display: 'block' }}>Instance parameters</Label>
                   <Stack>
                     {fields.map((field, index) => (
-                      <Stack key={field.id}>
+                      <Stack key={field.id} css={{ border: '1px solid $gray6', borderRadius: '$2', padding: '$3', mb: '$2' }}>
                         <Flex row css={{ gap: '$2', width: '100%' }}>
-                          <Controller
-                            control={control}
-                            name={`InstanceParameters.${index}.InstanceParameter.ParameterFlag`}
-                            render={({ field: controllerField }) => (
-                              <Box css={{ flex: 1 }}>
+                          <Box css={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '$2', flex: 1 }}>
+                            <Controller
+                              control={control}
+                              name={`InstanceParameters.${index}.InstanceParameter.ParameterFlag`}
+                              render={({ field: controllerField }) => (
                                 <Select
                                   {...controllerField}
                                   instanceId={`instance-param-flag-${index}`}
@@ -444,15 +443,13 @@ export const SetHookDialog: React.FC<{ accountAddress: string }> = React.memo(
                                   }}
                                   isDisabled={field.$metaData?.required}
                                 />
-                              </Box>
-                            )}
-                          />
-                          <Controller
-                            control={control}
-                            name={`InstanceParameters.${index}.InstanceParameter.ParameterType.type`}
-                            rules={{ required: field.$metaData?.required }}
-                            render={({ field: controllerField }) => (
-                              <Box css={{ flex: 1 }}>
+                              )}
+                            />
+                            <Controller
+                              control={control}
+                              name={`InstanceParameters.${index}.InstanceParameter.ParameterType.type`}
+                              rules={{ required: field.$metaData?.required }}
+                              render={({ field: controllerField }) => (
                                 <Select
                                   {...controllerField}
                                   instanceId={`instance-param-type-${index}`}
@@ -473,29 +470,34 @@ export const SetHookDialog: React.FC<{ accountAddress: string }> = React.memo(
                                   }}
                                   isDisabled={field.$metaData?.required}
                                 />
-                              </Box>
-                            )}
-                          />
-                          <Button onClick={() => remove(index)} variant="destroy">
+                              )}
+                            />
+                          </Box>
+                          <Button onClick={() => remove(index)} variant="destroy" css={{ flexShrink: 0 }}>
                             <Trash weight="regular" size="16px" />
                           </Button>
                         </Flex>
-                        <Flex row css={{ mt: '$2', width: '100%' }}>
+                        
+                        {/* Parameter value input below flag and type */}
+                        <Box css={{ mt: '$2', width: '100%' }}>
+                          <Label css={{ fontSize: '$xs', mb: '$1', color: '$gray11' }}>Value</Label>
                           <Input
-                            placeholder="Parameter name"
+                            placeholder="Enter parameter value"
                             css={{ width: '100%' }}
-                            readOnly={field.$metaData?.required}
                             {...register(
-                              `InstanceParameters.${index}.InstanceParameter.ParameterName`
+                              `InstanceParameterValues.${index}.InstanceParameterValue.ParameterValue.value`
                             )}
                           />
-                        </Flex>
+                        </Box>
+                        
                         {errors.InstanceParameters?.[index]?.InstanceParameter?.ParameterType && (
                           <Text error>This field is required</Text>
                         )}
-                        <Label css={{ fontSize: '$sm', mt: '$1' }}>
-                          {capitalize(field.$metaData?.description)}
-                        </Label>
+                        {field.$metaData?.description && (
+                          <Label css={{ fontSize: '$sm', mt: '$2', color: '$gray11' }}>
+                            {capitalize(field.$metaData?.description)}
+                          </Label>
+                        )}
                       </Stack>
                     ))}
                     <Button
@@ -506,7 +508,6 @@ export const SetHookDialog: React.FC<{ accountAddress: string }> = React.memo(
                         append({
                           InstanceParameter: {
                             ParameterFlag: 0,
-                            ParameterName: '',
                             ParameterType: { type: '' }
                           }
                         })
@@ -515,25 +516,6 @@ export const SetHookDialog: React.FC<{ accountAddress: string }> = React.memo(
                       <Plus size="16px" />
                       Add Instance Parameter
                     </Button>
-                  </Stack>
-                </Box>
-                <Box css={{ width: '100%' }}>
-                  <Label style={{ marginBottom: '10px', display: 'block' }}>Instance parameter values</Label>
-                  <Stack>
-                    {instanceParameters?.map((param: any, index: number) => (
-                      <Flex key={index} column css={{ width: '100%' }}>
-                        <Label css={{ fontSize: '$sm', mb: '$1' }}>
-                          {param?.InstanceParameter?.ParameterName || 'Unnamed'} ({param?.InstanceParameter?.ParameterType?.type || 'No type'})
-                        </Label>
-                        <Input
-                          placeholder="Parameter value"
-                          css={{ width: '100%' }}
-                          {...register(
-                            `InstanceParameterValues.${index}.InstanceParameterValue.ParameterValue.value`
-                          )}
-                        />
-                      </Flex>
-                    ))}
                   </Stack>
                 </Box>
                 <Box css={{ width: '100%', position: 'relative' }}>

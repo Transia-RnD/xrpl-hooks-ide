@@ -250,23 +250,14 @@ export const TxUI: FC<UIProps> = ({
     // Update transaction state with FunctionName
     const functionName = func.Function.FunctionName
     
-    // Reset parameters
-    const params: Parameter[] = []
-    func?.Function.Parameters?.forEach(param => {
-      params.push({
-        Parameter: {
-          ParameterType: param.Parameter.ParameterType,
-          ParameterValue: param.Parameter.ParameterValue
-        }
-      })
+    // Initialize empty parameters object for user input
+    const emptyParams: Record<string, string> = {}
+    func?.Function.Parameters?.forEach((_, idx) => {
+      emptyParams[idx] = ''
     })
-    // @ts-expect-error -- TODO
-    setFunctionParameters(params)
-
-    console.log(params);
+    setFunctionParameters(emptyParams)
     
-    
-    // Clear Parameters in transaction state
+    // Clear Parameters in transaction state initially
     setState({
       txFields: {
         ...txFields,
@@ -277,36 +268,66 @@ export const TxUI: FC<UIProps> = ({
           $value: functionName
         },
         // @ts-expect-error -- TODO
-        Parameters: Object.keys(params).length > 0 ? params : undefined
+        Parameters: undefined
       }
     })
   }
 
   // Handle parameter value change
-  const handleParameterChange = (paramName: string, value: string, paramType: string) => {
-    setFunctionParameters(prev => ({
-      ...prev,
-      [paramName]: value
-    }))
+  const handleParameterChange = (paramIndex: number, value: string, param: any) => {
+    const paramType = param.Parameter.ParameterType?.type || 'string'
     
-    // Update transaction state with Parameters array
-    const updatedParams = { ...functionParameters, [paramName]: value }
-    const parametersArray = Object.entries(updatedParams)
-      .filter(([_, val]) => val !== '')
-      .map(([name, val]) => ({
-        Parameter: {
-          ParameterValue: {
-            type: paramType,
-            value: val
+    // Update local state
+    const updatedParams = {
+      ...functionParameters,
+      [paramIndex]: value
+    }
+    setFunctionParameters(updatedParams)
+    
+    // Build Parameters array for transaction - only include non-empty values
+    const parametersArray: any[] = []
+    
+    // Get all parameters from the selected function
+    selectedFunction?.Function.Parameters?.forEach((p, idx) => {
+      const val = updatedParams[idx]
+      if (val && val !== '') {
+        const pType = p.Parameter.ParameterType?.type || 'string'
+        const pFlag = p.Parameter.ParameterFlag
+        
+        // Parse value based on type
+        let parsedValue: any = val
+        
+        // For numeric types, convert to number
+        if (pType === 'UINT8' || pType === 'UINT16' || pType === 'UINT32' || pType === 'UINT64' || 
+            pType === 'INT8' || pType === 'INT16' || pType === 'INT32' || pType === 'INT64') {
+          parsedValue = parseInt(val, 10)
+        }
+        
+        // Build the parameter object
+        const paramObj: any = {
+          Parameter: {
+            ParameterValue: {
+              type: pType,
+              value: parsedValue
+            }
           }
         }
-      }))
+        
+        // Add ParameterFlag if it exists
+        if (pFlag !== undefined) {
+          paramObj.Parameter.ParameterFlag = pFlag
+        }
+        
+        parametersArray[idx] = paramObj
+      }
+    })
     
+    // Update transaction state
     setState({
       txFields: {
         ...txFields,
         // @ts-expect-error -- TODO
-        Parameters: parametersArray
+        Parameters: parametersArray.length > 0 ? parametersArray : undefined
       }
     })
   }
@@ -550,18 +571,16 @@ export const TxUI: FC<UIProps> = ({
               </Box>
 
               {selectedFunction.Function.Parameters.map((param, idx) => {
-                // @ts-expect-error -- TODO
-                const paramName = fromHex(param.Parameter.ParameterName)
-                const paramType = param.Parameter.ParameterType?.type
+                const paramType = param.Parameter.ParameterType?.type || 'unknown'
+                const paramFlag = param.Parameter.ParameterFlag
 
                 return (
-                  <TxField key={idx} label={paramName}>
+                  <TxField key={idx} label={`Parameter ${idx}`}>
                     <Flex column css={{ width: '100%' }}>
                       <Input
-                        placeholder={`Enter ${paramName} (${paramType})`}
-                        value={functionParameters[paramName] || ''}
-                        // @ts-expect-error -- TODO
-                        onChange={e => handleParameterChange(paramName, e.target.value, paramType)}
+                        placeholder={`Enter value (${paramType})`}
+                        value={functionParameters[idx] || ''}
+                        onChange={e => handleParameterChange(idx, e.target.value, param)}
                         css={{ flex: 'inherit' }}
                       />
                       <Text
@@ -573,8 +592,7 @@ export const TxUI: FC<UIProps> = ({
                         }}
                       >
                         Type: {paramType}
-                        {param.Parameter.ParameterFlag !== undefined &&
-                          ` | Flag: ${param.Parameter.ParameterFlag}`}
+                        {paramFlag !== undefined && ` | Flag: ${paramFlag}`}
                       </Text>
                     </Flex>
                   </TxField>
