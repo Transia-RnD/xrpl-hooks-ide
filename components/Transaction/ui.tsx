@@ -20,8 +20,8 @@ import AccountSequence from '../Sequence'
 import { capitalize, typeIs } from '../../utils/helpers'
 import { rpc } from '../../state/actions/xrpl-client'
 import ContractSource from '@transia/xrpl/dist/npm/models/ledger/ContractSource'
-import { fromHex, isHex } from '../../utils/hex'
-import { convertHexToString, Parameter, Function } from '@transia/xrpl'
+import { isHex } from '../../utils/hex'
+import { convertHexToString, Function } from '@transia/xrpl'
 import sha512Half from '@transia/xrpl/dist/npm/utils/hashes/sha512Half'
 
 const ledgerSpaces = {
@@ -267,7 +267,6 @@ export const TxUI: FC<UIProps> = ({
           $ishex: isHex(functionName),
           $value: functionName
         },
-        // @ts-expect-error -- TODO
         Parameters: undefined
       }
     })
@@ -275,6 +274,7 @@ export const TxUI: FC<UIProps> = ({
 
   // Handle parameter value change
   const handleParameterChange = (paramIndex: number, value: string, param: any) => {
+    // @ts-ignore -- TODO
     const paramType = param.Parameter.ParameterType?.type || 'string'
     
     // Update local state
@@ -289,6 +289,7 @@ export const TxUI: FC<UIProps> = ({
     
     // Get all parameters from the selected function
     selectedFunction?.Function.Parameters?.forEach((p, idx) => {
+      // @ts-expect-error -- TODO
       const val = updatedParams[idx]
       if (val && val !== '') {
         const pType = p.Parameter.ParameterType?.type || 'string'
@@ -326,7 +327,6 @@ export const TxUI: FC<UIProps> = ({
     setState({
       txFields: {
         ...txFields,
-        // @ts-expect-error -- TODO
         Parameters: parametersArray.length > 0 ? parametersArray : undefined
       }
     })

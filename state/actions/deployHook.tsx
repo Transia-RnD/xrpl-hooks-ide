@@ -4,11 +4,10 @@ import state, { IAccount } from '../index'
 import { Link } from '../../components'
 import { ref } from 'valtio'
 import { estimateDeployFee } from '../../utils/estimateFee'
-import { DeployContractData, toHex } from '../../utils/setHook'
+import { DeployContractData } from '../../utils/setHook'
 import ResultLink from '../../components/ResultLink'
 import { SubmitResponse, SubmittableTransaction, Transaction, TransactionMetadata, TxResponse, Wallet } from '@transia/xrpl'
 import { rpc} from './xrpl-client'
-import { isHex } from '../../utils/hex'
 
 function arrayBufferToHex(arrayBuffer?: ArrayBuffer | null) {
   if (!arrayBuffer) {

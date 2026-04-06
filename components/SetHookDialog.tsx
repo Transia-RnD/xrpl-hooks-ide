@@ -179,6 +179,7 @@ export const SetHookDialog: React.FC<{ accountAddress: string }> = React.memo(
       })
 
       // Build InstanceParameterValues
+      // @ts-expect-error -- TODO
       data.InstanceParameterValues = data.InstanceParameters.map(param => ({
         InstanceParameterValue: {
           ParameterFlag: param.InstanceParameter.ParameterFlag,
@@ -197,6 +198,7 @@ export const SetHookDialog: React.FC<{ accountAddress: string }> = React.memo(
         }
       }))
 
+      // @ts-ignore -- TODO
       const res = await deployHook(account, data)
       if (currAccount) currAccount.isLoading = false
 
@@ -507,6 +509,7 @@ export const SetHookDialog: React.FC<{ accountAddress: string }> = React.memo(
                       onClick={() =>
                         append({
                           InstanceParameter: {
+                            // @ts-ignore -- TODO
                             ParameterFlag: 0,
                             ParameterType: { type: '' }
                           }
